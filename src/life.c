@@ -10,6 +10,7 @@ Life *InitLife() {
     life->mode = LIFE_MODE_DRAWING;
     life->state = LIFE_STATE_PAUSED;
     life->grid = InitLifeGrid();
+    life->isRunning = false;
 
     return life;
 }
@@ -29,7 +30,7 @@ bool **InitLifeGrid() {
 }
 
 void UpdateLife(Life *life) {
-    /* Drawing */
+    /* Draw cell */
     if ((IsMouseButtonDown(MOUSE_BUTTON_LEFT)) &&
         GetLifeState(life) == LIFE_STATE_PAUSED) {
         Vector2 mousePosition = GetMousePosition();
@@ -44,9 +45,29 @@ void UpdateLife(Life *life) {
         }
     }
 
-    /* Iterating */
+    /* Step */
     if (IsKeyPressed(KEY_SPACE)) {
         StepLife(life);
+    }
+
+    /* Reset */
+    if (IsKeyPressed(KEY_DELETE)) {
+        for (int r = 0; r < gridSize; r++) {
+            for (int c = 0; c < gridSize; c++) {
+                life->grid[r][c] = 0;
+            }
+        }
+    }
+
+    /* Continuous stepping */
+    if (IsKeyPressed(KEY_ENTER)) {
+        ToggleLifeRunning(life);
+    }
+
+    if (IsLifeRunning(life)) {
+        StepLife(life);
+
+        WaitTime(0.05);
     }
 }
 
@@ -90,10 +111,12 @@ void StepLife(Life *life) {
     Vector2 directions[] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1},
                             {0, 1},   {1, -1}, {1, 0},  {1, 1}};
 
+    // Cell
     for (int r = 0; r < gridSize; r++) {
         for (int c = 0; c < gridSize; c++) {
             int neighbours = 0;
 
+            // Direction
             for (int i = 0; i < sizeof(directions) / sizeof(directions[0]);
                  i++) {
                 int nr = r + (int)directions[i].y;
@@ -106,6 +129,7 @@ void StepLife(Life *life) {
                 }
             }
 
+            /* Action */
             if ((neighbours == 2 || neighbours == 3) && oldGrid[r][c]) {
                 newGrid[r][c] = 1;
             } else if (neighbours == 3) {
@@ -114,10 +138,15 @@ void StepLife(Life *life) {
         }
     }
 
+    /* Grid swap */
     life->grid = newGrid;
 
     UnloadLifeGrid(oldGrid);
 }
+
+void ToggleLifeRunning(Life *life) { life->isRunning = !life->isRunning; }
+
+bool IsLifeRunning(Life *life) { return life->isRunning; }
 
 void UnloadLifeGrid(bool **grid) {
     for (int r = 0; r < gridSize; r++) {

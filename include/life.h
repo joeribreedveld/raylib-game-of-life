@@ -19,6 +19,7 @@ typedef struct Life {
     bool **grid;
     LifeState state;
     LifeMode mode;
+    bool isRunning;
 } Life;
 
 Life *InitLife();
@@ -38,6 +39,10 @@ void SpawnLifeCell(Life *life, int row, int column);
 void KillLifeCell(Life *life, int row, int column);
 
 void StepLife(Life *life);
+
+void ToggleLifeRunning(Life *life);
+
+bool IsLifeRunning(Life *life);
 
 void UnloadLifeGrid(bool **grid);
 
