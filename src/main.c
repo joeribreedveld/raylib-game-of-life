@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "life_grid.h"
+#include "life.h"
 #include "raylib.h"
 
 int main() {
@@ -12,16 +12,16 @@ int main() {
 
     SetTargetFPS(60);
 
-    Grid grid = InitLifeGrid();
+    Life *life = InitLife();
 
     while (!WindowShouldClose()) {
         /* Update */
-        UpdateLifeGrid(grid);
+        UpdateLife(life);
 
         /* Draw */
         BeginDrawing();
 
-        DrawLifeGrid(grid);
+        DrawLife(life);
 
         ClearBackground(WHITE);
 
@@ -29,7 +29,7 @@ int main() {
     }
 
     /* DeInit */
-    UnloadLifeGrid(grid);
+    UnloadLife(life);
 
     CloseWindow();
 

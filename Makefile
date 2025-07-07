@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Iinclude -I/opt/homebrew/opt/raylib/include
 LDFLAGS=-L/opt/homebrew/opt/raylib/lib -lraylib
-SRC=src/main.c src/life_grid.c
+SRC=src/main.c src/life.c
 TARGET=game_of_life
 
 default: all
